@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"dev-test/nubank-dev-test-2k21/app/builder"
-	"dev-test/nubank-dev-test-2k21/app/dto/command"
+	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/entity"
 )
 
@@ -21,13 +21,13 @@ func NewAuthorizeService() AuthorizeService {
 	return AuthorizeService{}
 }
 
-func (a AuthorizeService) HandleOperations(commandOperationsDTO command.Operations) error {
+func (a AuthorizeService) HandleOperations(commandOperationsDTO input.Operations) error {
 	accountLine := commandOperationsDTO.Lines[0]
 	if !accountLine.IsAccount() {
 		return ErrAccountRequired
 	}
 
-	account := builder.CreateAccountFromCommand(accountLine.(command.AccountLine))
+	account := builder.CreateAccountFromCommand(accountLine.(input.AccountLine))
 	operations := entity.NewOperations()
 	operations.RegisterEvent(account)
 
@@ -45,7 +45,7 @@ func (a AuthorizeService) HandleOperations(commandOperationsDTO command.Operatio
 		}
 
 		if operationLine.IsTransaction() {
-			fmt.Printf("%+v\n", "aaa")
+			fmt.Printf("%+v\n", "ttt")
 		}
 	}
 

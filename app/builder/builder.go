@@ -1,18 +1,18 @@
 package builder
 
 import (
-	"dev-test/nubank-dev-test-2k21/app/dto/command"
+	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/entity"
 )
 
-func CreateAccountFromCommand(accountLine command.AccountLine) entity.Account {
+func CreateAccountFromCommand(accountLine input.AccountLine) entity.Account {
 	return entity.NewAccount(
 		accountLine.Account.ActiveCard,
 		accountLine.Account.AvailableLimit,
 	)
 }
 
-func CreateTransactionFromCommand(transactionLine command.TransactionLine) entity.Transaction {
+func CreateTransactionFromCommand(transactionLine input.TransactionLine) entity.Transaction {
 	return entity.NewTransaction(
 		transactionLine.Transaction.Merchant,
 		transactionLine.Transaction.Amount,

@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"os"
 
-	"dev-test/nubank-dev-test-2k21/app/dto/command"
+	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/service"
 )
 
 func Run() {
-	operations := command.NewOperations()
+	operations := input.NewOperations()
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
@@ -19,22 +19,22 @@ func Run() {
 		var line map[string]interface{}
 		json.Unmarshal(jsonData, &line)
 
-		if _, ok := line[command.LINE_ACCOUNT]; ok {
-			var accountLine command.AccountLine
+		if _, ok := line[input.LINE_ACCOUNT]; ok {
+			var accountLine input.AccountLine
 			err := json.Unmarshal(jsonData, &accountLine)
 			if err == nil {
 				operations.AddLine(accountLine)
-				continue
 			}
+			continue
 		}
 
-		if _, ok := line[command.LINE_TRANSACTION]; ok {
-			var transactionLine command.TransactionLine
+		if _, ok := line[input.LINE_TRANSACTION]; ok {
+			var transactionLine input.TransactionLine
 			err := json.Unmarshal(jsonData, &transactionLine)
 			if err == nil {
 				operations.AddLine(transactionLine)
-				continue
 			}
+			continue
 		}
 	}
 
