@@ -62,7 +62,7 @@ func NewViolationAccountAlreadyInitialized() Violation {
 
 func NewViolationCardNotActive() Violation {
 	return Violation{
-		name: ACCOUNT_VIOLATION_ALREADY_INITIALIZED,
+		name: TRANSACTION_VIOLATION_CARD_NOT_ACTIVE,
 	}
 }
 
