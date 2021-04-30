@@ -60,6 +60,24 @@ func NewViolationAccountAlreadyInitialized() Violation {
 	}
 }
 
+func NewViolationCardNotActive() Violation {
+	return Violation{
+		name: ACCOUNT_VIOLATION_ALREADY_INITIALIZED,
+	}
+}
+
+func NewViolationInsufficientLimit() Violation {
+	return Violation{
+		name: TRANSACTION_VIOLATION_INSUFFICIENT_LIMIT,
+	}
+}
+
+func NewViolationHighFrequencySmallInterval() Violation {
+	return Violation{
+		name: TRANSACTION_VIOLATION_HIGH_FREQUENCY_SMALL_INTERVAL,
+	}
+}
+
 type Event struct {
 	Account    Account
 	Violations []Violation
