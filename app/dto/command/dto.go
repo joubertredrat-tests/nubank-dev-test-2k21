@@ -10,7 +10,8 @@ const (
 )
 
 type OperationLine interface {
-	GetType() string
+	IsAccount() bool
+	IsTransaction() bool
 }
 
 type AccountLine struct {
@@ -20,8 +21,12 @@ type AccountLine struct {
 	} `json:"account"`
 }
 
-func (a AccountLine) GetType() string {
-	return LINE_ACCOUNT
+func (a AccountLine) IsAccount() bool {
+	return true
+}
+
+func (a AccountLine) IsTransaction() bool {
+	return false
 }
 
 type TransactionLine struct {
@@ -32,8 +37,12 @@ type TransactionLine struct {
 	} `json:"transaction"`
 }
 
-func (t TransactionLine) GetType() string {
-	return LINE_TRANSACTION
+func (t TransactionLine) IsAccount() bool {
+	return false
+}
+
+func (t TransactionLine) IsTransaction() bool {
+	return true
 }
 
 type Operations struct {

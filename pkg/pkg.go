@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"dev-test/nubank-dev-test-2k21/app/dto/command"
+	"dev-test/nubank-dev-test-2k21/app/service"
 )
 
 func Run() {
@@ -42,5 +43,6 @@ func Run() {
 		os.Exit(-1)
 	}
 
-	fmt.Printf("%+v\n", operations)
+	authorizeService := service.NewAuthorizeService()
+	authorizeService.HandleOperations(operations)
 }
