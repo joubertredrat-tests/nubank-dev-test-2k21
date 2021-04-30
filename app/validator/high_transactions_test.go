@@ -10,28 +10,6 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
-func TestNoViolation(t *testing.T) {
-	account := entity.NewAccount(true, 100)
-	transactionLine := input.TransactionLine{
-		Transaction: struct {
-			Merchant string    `json:"merchant"`
-			Amount   uint      `json:"amount"`
-			Time     time.Time `json:"time"`
-		}{
-			Merchant: "Burger King",
-			Amount:   80,
-			Time:     time.Now(),
-		},
-	}
-
-	validator := validator.NewHighTransactionsValidator(3, 120)
-	violationGot := validator.GetViolation(account, transactionLine)
-
-	if violationGot != nil {
-		t.Errorf("validator.GetViolation(account, transactionLine) expected nil, got *entity.Violation")
-	}
-}
-
 func TestHighTransactionsValidator(t *testing.T) {
 	account := entity.NewAccount(true, 100)
 
@@ -77,6 +55,24 @@ func TestHighTransactionsValidator(t *testing.T) {
 				t.Errorf("%s expected %d violations, got %d", test.name, test.violationsExpected, violationsGot)
 			}
 		})
+	}
+}
+
+func TestViolationHighFrequencySmallInterval(t *testing.T) {
+	violationExpected := entity.NewViolationHighFrequencySmallInterval()
+	account := entity.NewAccount(true, 100)
+
+	transactionsLineOne := getTransactionLine("Burger King", 20, "2021-04-20T19:25:00.000Z")
+	transactionsLineTwo := getTransactionLine("Habib's", 20, "2021-04-20T19:25:00.000Z")
+	transactionsLineThree := getTransactionLine("Bob's", 20, "2021-04-20T19:25:00.000Z")
+
+	validator := validator.NewHighTransactionsValidator(3, 120)
+	validator.GetViolation(account, transactionsLineOne)
+	validator.GetViolation(account, transactionsLineTwo)
+	violationGot := validator.GetViolation(account, transactionsLineThree)
+
+	if violationExpected.GetName() != violationGot.GetName() {
+		t.Errorf("validator.GetViolation() expected violation with name %s, got %s", violationExpected.GetName(), violationGot.GetName())
 	}
 }
 
