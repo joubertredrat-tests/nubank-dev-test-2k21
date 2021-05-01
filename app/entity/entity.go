@@ -78,6 +78,12 @@ func NewViolationHighFrequencySmallInterval() Violation {
 	}
 }
 
+func NewViolationDoubleTransaction() Violation {
+	return Violation{
+		name: TRANSACTION_VIOLATION_DOUBLE_TRANSACTION,
+	}
+}
+
 type Event struct {
 	Account    Account
 	Violations []Violation

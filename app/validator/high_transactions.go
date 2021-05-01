@@ -43,9 +43,9 @@ func (v *HighTransactionsValidator) hasHighFrequency() bool {
 
 	timeInitial := transactionsTime[0]
 	timeFinal := transactionsTime[len(transactionsTime)-1]
-	diff := timeFinal.Sub(timeInitial)
+	timeDiff := timeFinal.Sub(timeInitial)
 
-	return float64(v.TimeIntervalSeconds) >= diff.Seconds()
+	return float64(v.TimeIntervalSeconds) >= timeDiff.Seconds()
 }
 
 func (v *HighTransactionsValidator) getTransactionsTimeForAnalysis() []time.Time {
