@@ -27,28 +27,97 @@ func TestKindOfHighTransactionsValidator(t *testing.T) {
 func TestHighTransactionsValidator(t *testing.T) {
 	tests := []struct {
 		name               string
-		transactions       []entity.Transaction
 		violationsExpected int
+		getTransactions    func() []entity.Transaction
 	}{
 		{
 			name:               "Test with 2 transactions",
-			transactions:       getTwoTransactions(),
 			violationsExpected: 0,
+			getTransactions: func() []entity.Transaction {
+				transactions := []entity.Transaction{}
+
+				transactions = append(
+					transactions,
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
+					entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
+				)
+
+				return transactions
+			},
 		},
 		{
 			name:               "Test with 14 transactions",
-			transactions:       getFourteenTransactions(),
 			violationsExpected: 0,
+			getTransactions: func() []entity.Transaction {
+				transactions := []entity.Transaction{}
+
+				transactions = append(
+					transactions,
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
+					entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
+					entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T07:04:00.000Z")),
+					entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T07:15:00.000Z")),
+					entity.NewTransaction("Domino's Pizza", 20, helper.GetTimeFromString("2021-04-21T09:26:00.000Z")),
+					entity.NewTransaction("Pizza Hut", 20, helper.GetTimeFromString("2021-04-21T12:30:00.000Z")),
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-21T15:17:00.000Z")),
+					entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T17:33:00.000Z")),
+					entity.NewTransaction("Yogoberry", 20, helper.GetTimeFromString("2021-04-21T20:21:00.000Z")),
+					entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T23:01:00.000Z")),
+					entity.NewTransaction("Starbucks", 20, helper.GetTimeFromString("2021-04-22T06:10:00.000Z")),
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-22T09:22:00.000Z")),
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-22T09:57:00.000Z")),
+					entity.NewTransaction("Mcdonald's", 20, helper.GetTimeFromString("2021-04-22T14:05:00.000Z")),
+				)
+
+				return transactions
+			},
 		},
 		{
 			name:               "Test with 7 transactions with 1 violation",
-			transactions:       getSevenTransactionsWithOneViolation(),
 			violationsExpected: 1,
+			getTransactions: func() []entity.Transaction {
+				transactions := []entity.Transaction{}
+
+				transactions = append(
+					transactions,
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
+					entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
+					entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T07:04:00.000Z")),
+					entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T07:05:00.000Z")),
+					entity.NewTransaction("Domino's Pizza", 20, helper.GetTimeFromString("2021-04-21T07:05:00.000Z")),
+					entity.NewTransaction("Pizza Hut", 20, helper.GetTimeFromString("2021-04-21T12:30:00.000Z")),
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-21T15:17:00.000Z")),
+				)
+
+				return transactions
+			},
 		},
 		{
 			name:               "Test with 14 transactions with 3 violations",
-			transactions:       getFourteenTransactionsWithThreeViolations(),
 			violationsExpected: 3,
+			getTransactions: func() []entity.Transaction {
+				transactions := []entity.Transaction{}
+
+				transactions = append(
+					transactions,
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
+					entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
+					entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
+					entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-20T19:43:00.000Z")),
+					entity.NewTransaction("Domino's Pizza", 20, helper.GetTimeFromString("2021-04-21T07:06:00.000Z")),
+					entity.NewTransaction("Pizza Hut", 20, helper.GetTimeFromString("2021-04-21T12:30:00.000Z")),
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-21T12:31:00.000Z")),
+					entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T12:31:00.000Z")),
+					entity.NewTransaction("Yogoberry", 20, helper.GetTimeFromString("2021-04-21T20:21:00.000Z")),
+					entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T23:01:00.000Z")),
+					entity.NewTransaction("Starbucks", 20, helper.GetTimeFromString("2021-04-22T06:10:00.000Z")),
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-22T09:22:00.000Z")),
+					entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-22T09:22:00.000Z")),
+					entity.NewTransaction("Mcdonald's", 20, helper.GetTimeFromString("2021-04-22T09:22:00.000Z")),
+				)
+
+				return transactions
+			},
 		},
 	}
 
@@ -56,7 +125,7 @@ func TestHighTransactionsValidator(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			violationsGot := 0
 			validator := validator.NewHighTransactionsValidator(3, 120)
-			for _, transaction := range test.transactions {
+			for _, transaction := range test.getTransactions() {
 				violationGot := validator.GetViolation(transaction)
 				if violationGot != nil {
 					violationsGot++
@@ -85,81 +154,4 @@ func TestViolationHighFrequencySmallInterval(t *testing.T) {
 	if violationExpected.GetName() != violationGot.GetName() {
 		t.Errorf("validator.GetViolation() expected violation with name %s, got %s", violationExpected.GetName(), violationGot.GetName())
 	}
-}
-
-func getTwoTransactions() []entity.Transaction {
-	transactions := []entity.Transaction{}
-
-	transactions = append(
-		transactions,
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
-		entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
-	)
-
-	return transactions
-}
-
-func getFourteenTransactions() []entity.Transaction {
-	transactions := []entity.Transaction{}
-
-	transactions = append(
-		transactions,
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
-		entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
-		entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T07:04:00.000Z")),
-		entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T07:15:00.000Z")),
-		entity.NewTransaction("Domino's Pizza", 20, helper.GetTimeFromString("2021-04-21T09:26:00.000Z")),
-		entity.NewTransaction("Pizza Hut", 20, helper.GetTimeFromString("2021-04-21T12:30:00.000Z")),
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-21T15:17:00.000Z")),
-		entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T17:33:00.000Z")),
-		entity.NewTransaction("Yogoberry", 20, helper.GetTimeFromString("2021-04-21T20:21:00.000Z")),
-		entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T23:01:00.000Z")),
-		entity.NewTransaction("Starbucks", 20, helper.GetTimeFromString("2021-04-22T06:10:00.000Z")),
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-22T09:22:00.000Z")),
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-22T09:57:00.000Z")),
-		entity.NewTransaction("Mcdonald's", 20, helper.GetTimeFromString("2021-04-22T14:05:00.000Z")),
-	)
-
-	return transactions
-}
-
-func getSevenTransactionsWithOneViolation() []entity.Transaction {
-	transactions := []entity.Transaction{}
-
-	transactions = append(
-		transactions,
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
-		entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
-		entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T07:04:00.000Z")),
-		entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T07:05:00.000Z")),
-		entity.NewTransaction("Domino's Pizza", 20, helper.GetTimeFromString("2021-04-21T07:05:00.000Z")),
-		entity.NewTransaction("Pizza Hut", 20, helper.GetTimeFromString("2021-04-21T12:30:00.000Z")),
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-21T15:17:00.000Z")),
-	)
-
-	return transactions
-}
-
-func getFourteenTransactionsWithThreeViolations() []entity.Transaction {
-	transactions := []entity.Transaction{}
-
-	transactions = append(
-		transactions,
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
-		entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
-		entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
-		entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-20T19:43:00.000Z")),
-		entity.NewTransaction("Domino's Pizza", 20, helper.GetTimeFromString("2021-04-21T07:06:00.000Z")),
-		entity.NewTransaction("Pizza Hut", 20, helper.GetTimeFromString("2021-04-21T12:30:00.000Z")),
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-21T12:31:00.000Z")),
-		entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T12:31:00.000Z")),
-		entity.NewTransaction("Yogoberry", 20, helper.GetTimeFromString("2021-04-21T20:21:00.000Z")),
-		entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T23:01:00.000Z")),
-		entity.NewTransaction("Starbucks", 20, helper.GetTimeFromString("2021-04-22T06:10:00.000Z")),
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-22T09:22:00.000Z")),
-		entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-22T09:22:00.000Z")),
-		entity.NewTransaction("Mcdonald's", 20, helper.GetTimeFromString("2021-04-22T09:22:00.000Z")),
-	)
-
-	return transactions
 }
