@@ -1,18 +1,29 @@
 package validator
 
 import (
-	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/entity"
 )
 
 type CardLimitValidator struct{}
 
-func NewCardLimitValidator() ValidatorInterface {
-	return CardLimitValidator{}
+func NewCardLimitValidator() *CardLimitValidator {
+	return &CardLimitValidator{}
 }
 
-func (v CardLimitValidator) GetViolation(account entity.Account, transactionLine input.TransactionLine) *entity.Violation {
-	if transactionLine.Transaction.Amount > account.AvailableLimit.Value {
+func (v *CardLimitValidator) IsAccountValidator() bool {
+	return false
+}
+
+func (v *CardLimitValidator) IsTransactionValidator() bool {
+	return false
+}
+
+func (v *CardLimitValidator) IsOperationValidator() bool {
+	return true
+}
+
+func (v CardLimitValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
+	if transaction.Amount.Value > account.AvailableLimit.Value {
 		violation := entity.NewViolationInsufficientLimit()
 		return &violation
 	}

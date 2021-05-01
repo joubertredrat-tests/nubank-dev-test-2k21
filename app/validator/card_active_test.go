@@ -7,7 +7,7 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
-func TestKindOfValidator(t *testing.T) {
+func TestKindOfCardActiveValidator(t *testing.T) {
 	validator := validator.NewCardActiveValidator()
 
 	if !validator.IsAccountValidator() {
