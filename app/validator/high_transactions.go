@@ -3,7 +3,6 @@ package validator
 import (
 	"time"
 
-	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/entity"
 )
 
@@ -13,15 +12,27 @@ type HighTransactionsValidator struct {
 	TimeIntervalSeconds  uint
 }
 
-func NewHighTransactionsValidator(transactionsAnalysis, timeIntervalSeconds uint) ValidatorInterface {
+func NewHighTransactionsValidator(transactionsAnalysis, timeIntervalSeconds uint) *HighTransactionsValidator {
 	return &HighTransactionsValidator{
 		TransactionsAnalysis: transactionsAnalysis,
 		TimeIntervalSeconds:  timeIntervalSeconds,
 	}
 }
 
-func (v *HighTransactionsValidator) GetViolation(account entity.Account, transactionLine input.TransactionLine) *entity.Violation {
-	v.registerTransactionTime(transactionLine.Transaction.Time)
+func (v *HighTransactionsValidator) IsAccountValidator() bool {
+	return false
+}
+
+func (v *HighTransactionsValidator) IsTransactionValidator() bool {
+	return true
+}
+
+func (v *HighTransactionsValidator) IsOperationValidator() bool {
+	return false
+}
+
+func (v *HighTransactionsValidator) GetViolation(transaction entity.Transaction) *entity.Violation {
+	v.registerTransactionTime(transaction.Time)
 	if v.hasHighFrequency() {
 		violation := entity.NewViolationHighFrequencySmallInterval()
 		return &violation
