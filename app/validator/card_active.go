@@ -23,7 +23,7 @@ func (v *CardActiveValidator) IsOperationValidator() bool {
 }
 
 func (v *CardActiveValidator) GetViolation(account entity.Account) *entity.Violation {
-	if !account.ActiveCard {
+	if !account.IsActiveCard() {
 		violation := entity.NewViolationCardNotActive()
 		return &violation
 	}

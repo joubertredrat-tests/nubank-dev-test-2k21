@@ -32,7 +32,7 @@ func (v *HighTransactionsValidator) IsOperationValidator() bool {
 }
 
 func (v *HighTransactionsValidator) GetViolation(transaction entity.Transaction) *entity.Violation {
-	v.registerTransactionTime(transaction.Time)
+	v.registerTransactionTime(transaction.GetTime())
 	if v.hasHighFrequency() {
 		violation := entity.NewViolationHighFrequencySmallInterval()
 		return &violation

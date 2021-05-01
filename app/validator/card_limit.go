@@ -23,7 +23,7 @@ func (v *CardLimitValidator) IsOperationValidator() bool {
 }
 
 func (v CardLimitValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
-	if transaction.Amount.Value > account.AvailableLimit.Value {
+	if transaction.GetAmount().GetValue() > account.GetAvailableLimit().GetValue() {
 		violation := entity.NewViolationInsufficientLimit()
 		return &violation
 	}
