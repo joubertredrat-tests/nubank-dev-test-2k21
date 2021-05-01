@@ -8,6 +8,22 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
+func TestKindOfHighTransactionsValidator(t *testing.T) {
+	validator := validator.NewHighTransactionsValidator(3, 120)
+
+	if validator.IsAccountValidator() {
+		t.Errorf("validator.IsAccountValidator() expected false, got true")
+	}
+
+	if !validator.IsTransactionValidator() {
+		t.Errorf("validator.IsTransactionValidator() expected true, got false")
+	}
+
+	if validator.IsOperationValidator() {
+		t.Errorf("validator.IsOperationValidator() expected false, got true")
+	}
+}
+
 func TestHighTransactionsValidator(t *testing.T) {
 	tests := []struct {
 		name               string
