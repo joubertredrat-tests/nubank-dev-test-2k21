@@ -7,6 +7,7 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/builder"
 	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/entity"
+	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
 var (
@@ -14,15 +15,17 @@ var (
 )
 
 type AuthorizeService struct {
-	Account entity.Account
+	Validators []validator.ValidatorInterface
 }
 
-func NewAuthorizeService() AuthorizeService {
-	return AuthorizeService{}
+func NewAuthorizeService(validators []validator.ValidatorInterface) AuthorizeService {
+	return AuthorizeService{
+		Validators: validators,
+	}
 }
 
-func (a AuthorizeService) HandleOperations(commandOperationsDTO input.Operations) error {
-	accountLine := commandOperationsDTO.Lines[0]
+func (a AuthorizeService) HandleOperations(inputOperations input.Operations) error {
+	accountLine := inputOperations.Lines[0]
 	if !accountLine.IsAccount() {
 		return ErrAccountRequired
 	}
@@ -31,8 +34,8 @@ func (a AuthorizeService) HandleOperations(commandOperationsDTO input.Operations
 	operations := entity.NewOperations()
 	operations.RegisterEvent(account)
 
-	for i := 1; i < len(commandOperationsDTO.Lines); i++ {
-		operationLine := commandOperationsDTO.Lines[i]
+	for i := 1; i < len(inputOperations.Lines); i++ {
+		operationLine := inputOperations.Lines[i]
 		if operationLine.IsAccount() {
 
 			operations.RegisterViolationEvent(

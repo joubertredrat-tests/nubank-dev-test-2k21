@@ -8,6 +8,7 @@ import (
 
 	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/service"
+	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
 func Run() {
@@ -43,6 +44,13 @@ func Run() {
 		os.Exit(-1)
 	}
 
-	authorizeService := service.NewAuthorizeService()
+	validators := []validator.ValidatorInterface{
+		validator.NewCardActiveValidator(),
+		validator.NewCardLimitValidator(),
+		validator.NewHighTransactionsValidator(2, 120),
+		validator.NewDoubleTransactionValidator(120),
+	}
+
+	authorizeService := service.NewAuthorizeService(validators)
 	authorizeService.HandleOperations(operations)
 }
