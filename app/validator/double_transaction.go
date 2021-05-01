@@ -1,26 +1,36 @@
 package validator
 
 import (
-	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/entity"
 )
-
-const INTERVAL_SECONDS = 120
 
 type DoubleTransactionValidator struct {
 	Transactions        map[string][]entity.Transaction
 	TimeIntervalSeconds uint
 }
 
-func NewDoubleTransactionValidator(timeIntervalSeconds uint) ValidatorInterface {
+func NewDoubleTransactionValidator(timeIntervalSeconds uint) *DoubleTransactionValidator {
 	return &DoubleTransactionValidator{
+		Transactions:        make(map[string][]entity.Transaction),
 		TimeIntervalSeconds: timeIntervalSeconds,
 	}
 }
 
-func (v *DoubleTransactionValidator) GetViolation(account entity.Account, transactionLine input.TransactionLine) *entity.Violation {
-	v.registerTransaction(transactionLine)
-	if v.hasDoubleTransactions(transactionLine) {
+func (v *DoubleTransactionValidator) IsAccountValidator() bool {
+	return false
+}
+
+func (v *DoubleTransactionValidator) IsTransactionValidator() bool {
+	return true
+}
+
+func (v *DoubleTransactionValidator) IsOperationValidator() bool {
+	return false
+}
+
+func (v *DoubleTransactionValidator) GetViolation(transaction entity.Transaction) *entity.Violation {
+	v.registerTransaction(transaction)
+	if v.hasDoubleTransactions(transaction) {
 		violation := entity.NewViolationDoubleTransaction()
 		return &violation
 	}
@@ -28,36 +38,31 @@ func (v *DoubleTransactionValidator) GetViolation(account entity.Account, transa
 	return nil
 }
 
-func (v *DoubleTransactionValidator) registerTransaction(transactionLine input.TransactionLine) {
-	if _, ok := v.Transactions[transactionLine.Transaction.Merchant]; !ok {
-		v.Transactions[transactionLine.Transaction.Merchant] = []entity.Transaction{}
+func (v *DoubleTransactionValidator) registerTransaction(transaction entity.Transaction) {
+	if _, ok := v.Transactions[transaction.Merchant]; !ok {
+		v.Transactions[transaction.Merchant] = []entity.Transaction{}
 	}
 
-	v.Transactions[transactionLine.Transaction.Merchant] = append(
-		v.Transactions[transactionLine.Transaction.Merchant],
-		entity.NewTransaction(
-			transactionLine.Transaction.Merchant,
-			transactionLine.Transaction.Amount,
-			transactionLine.Transaction.Time,
-		),
+	v.Transactions[transaction.Merchant] = append(
+		v.Transactions[transaction.Merchant],
+		transaction,
 	)
 }
 
-func (v *DoubleTransactionValidator) hasDoubleTransactions(transactionLine input.TransactionLine) bool {
-	if len(v.Transactions[transactionLine.Transaction.Merchant]) < 2 {
+func (v *DoubleTransactionValidator) hasDoubleTransactions(transaction entity.Transaction) bool {
+	if len(v.Transactions[transaction.Merchant]) < 2 {
 		return false
 	}
 
-	keyTransactionInitial := len(v.Transactions[transactionLine.Transaction.Merchant]) - 2
-	keyTransactionFinal := len(v.Transactions[transactionLine.Transaction.Merchant]) - 1
-	transactionInitial := v.Transactions[transactionLine.Transaction.Merchant][keyTransactionInitial]
-	transactionFinal := v.Transactions[transactionLine.Transaction.Merchant][keyTransactionFinal]
+	keyTransactionInitial := len(v.Transactions[transaction.Merchant]) - 2
+	keyTransactionFinal := len(v.Transactions[transaction.Merchant]) - 1
+	transactionInitial := v.Transactions[transaction.Merchant][keyTransactionInitial]
+	transactionFinal := v.Transactions[transaction.Merchant][keyTransactionFinal]
 
 	if transactionFinal.Amount.Value != transactionInitial.Amount.Value {
 		return false
 	}
 
 	timeDiff := transactionFinal.Time.Sub(transactionInitial.Time)
-
-	return INTERVAL_SECONDS >= timeDiff.Seconds()
+	return float64(v.TimeIntervalSeconds) >= timeDiff.Seconds()
 }
