@@ -1,17 +1,28 @@
 package validator
 
 import (
-	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/entity"
 )
 
 type CardActiveValidator struct{}
 
-func NewCardActiveValidator() ValidatorInterface {
+func NewCardActiveValidator() *CardActiveValidator {
 	return &CardActiveValidator{}
 }
 
-func (v *CardActiveValidator) GetViolation(account entity.Account, transactionLine input.TransactionLine) *entity.Violation {
+func (v *CardActiveValidator) IsAccountValidator() bool {
+	return true
+}
+
+func (v *CardActiveValidator) IsTransactionValidator() bool {
+	return false
+}
+
+func (v *CardActiveValidator) IsOperationValidator() bool {
+	return false
+}
+
+func (v *CardActiveValidator) GetViolation(account entity.Account) *entity.Violation {
 	if !account.ActiveCard {
 		violation := entity.NewViolationCardNotActive()
 		return &violation

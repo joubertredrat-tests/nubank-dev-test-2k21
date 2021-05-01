@@ -1,10 +1,23 @@
 package validator
 
 import (
-	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/entity"
 )
 
 type ValidatorInterface interface {
-	GetViolation(account entity.Account, transactionLine input.TransactionLine) *entity.Violation
+	IsAccountValidator() bool
+	IsTransactionValidator() bool
+	IsOperationValidator() bool
+}
+
+type AccountValidatorInterface interface {
+	GetViolation(account entity.Account) *entity.Violation
+}
+
+type TransactionValidatorInterface interface {
+	GetViolation(transaction entity.Transaction) *entity.Violation
+}
+
+type OperationValidatorInterface interface {
+	GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation
 }
