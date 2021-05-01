@@ -29,7 +29,14 @@ func (o *Operations) RegisterEvent(account Account) {
 	)
 }
 
-func (o *Operations) RegisterViolationEvent(account Account, violations []Violation) {
+func (o *Operations) RegisterViolationEvent(account Account, violation Violation) {
+	o.Events = append(
+		o.Events,
+		NewEvent(account, []Violation{violation}),
+	)
+}
+
+func (o *Operations) RegisterViolationsEvent(account Account, violations []Violation) {
 	o.Events = append(
 		o.Events,
 		NewEvent(account, violations),

@@ -5,17 +5,17 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/entity"
 )
 
-func CreateAccountFromCommand(accountLine input.AccountLine) entity.Account {
+func CreateAccountFromInputDTO(operationLine input.OperationLine) entity.Account {
 	return entity.NewAccount(
-		accountLine.Account.ActiveCard,
-		accountLine.Account.AvailableLimit,
+		operationLine.(input.AccountLine).Account.ActiveCard,
+		operationLine.(input.AccountLine).Account.AvailableLimit,
 	)
 }
 
-func CreateTransactionFromCommand(transactionLine input.TransactionLine) entity.Transaction {
+func CreateTransactionFromInputDTO(operationLine input.OperationLine) entity.Transaction {
 	return entity.NewTransaction(
-		transactionLine.Transaction.Merchant,
-		transactionLine.Transaction.Amount,
-		transactionLine.Transaction.Time,
+		operationLine.(input.TransactionLine).Transaction.Merchant,
+		operationLine.(input.TransactionLine).Transaction.Amount,
+		operationLine.(input.TransactionLine).Transaction.Time,
 	)
 }

@@ -25,30 +25,32 @@ func NewAuthorizeService(validators []validator.ValidatorInterface) AuthorizeSer
 }
 
 func (a AuthorizeService) HandleOperations(inputOperations input.Operations) error {
-	accountLine := inputOperations.Lines[0]
-	if !accountLine.IsAccount() {
-		return ErrAccountRequired
-	}
-
-	account := builder.CreateAccountFromCommand(accountLine.(input.AccountLine))
 	operations := entity.NewOperations()
-	operations.RegisterEvent(account)
+	account := entity.NewAccountEmpty()
 
-	for i := 1; i < len(inputOperations.Lines); i++ {
-		operationLine := inputOperations.Lines[i]
+	for _, operationLine := range inputOperations.Lines {
+		if operationLine.IsAccount() && account.IsInitialized() {
+			operations.RegisterViolationEvent(account, entity.NewViolationAccountAlreadyInitialized())
+
+			continue
+		}
+
+		if operationLine.IsTransaction() && !account.IsInitialized() {
+			operations.RegisterViolationEvent(account, entity.NewViolationAccountNotInitialized())
+
+			continue
+		}
+
 		if operationLine.IsAccount() {
-
-			operations.RegisterViolationEvent(
-				account,
-				[]entity.Violation{
-					entity.NewViolationAccountAlreadyInitialized(),
-				},
-			)
+			account = builder.CreateAccountFromInputDTO(operationLine.(input.AccountLine))
+			operations.RegisterEvent(account)
 			continue
 		}
 
 		if operationLine.IsTransaction() {
-			fmt.Printf("%+v\n", "ttt")
+			// violations := []entity.Violation
+
+			fmt.Printf("%+v\n", "ttt all")
 		}
 	}
 

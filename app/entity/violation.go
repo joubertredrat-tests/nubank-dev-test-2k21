@@ -1,6 +1,7 @@
 package entity
 
 const (
+	ACCOUNT_VIOLATION_NOT_INITIALIZED                   = "account-not-initialized"
 	ACCOUNT_VIOLATION_ALREADY_INITIALIZED               = "account-already-initialized"
 	TRANSACTION_VIOLATION_CARD_NOT_ACTIVE               = "card-not-active"
 	TRANSACTION_VIOLATION_INSUFFICIENT_LIMIT            = "insufficient-limit"
@@ -10,6 +11,12 @@ const (
 
 type Violation struct {
 	name string
+}
+
+func NewViolationAccountNotInitialized() Violation {
+	return Violation{
+		name: ACCOUNT_VIOLATION_NOT_INITIALIZED,
+	}
 }
 
 func NewViolationAccountAlreadyInitialized() Violation {
