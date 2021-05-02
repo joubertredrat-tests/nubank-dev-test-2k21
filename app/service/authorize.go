@@ -49,13 +49,13 @@ func (a AuthorizeService) HandleOperations(inputOperations input.Operations) err
 
 		if operationLine.IsTransaction() {
 			// violations := []entity.Violation
-			transaction := builder.CreateTransactionFromInputDTO(operationLine)
+			// transaction := builder.CreateTransactionFromInputDTO(operationLine)
 
-			for _, validator := range a.Validators {
-				if validator.IsAccountValidator() {
-					validator.GetViolation(account)
-				}
-			}
+			// for _, validator := range a.Validators {
+			// 	if validator.IsAccountValidator() {
+			// 		validator.GetViolation(account)
+			// 	}
+			// }
 
 			fmt.Printf("%+v\n", "ttt all")
 		}
