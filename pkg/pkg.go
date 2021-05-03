@@ -44,13 +44,17 @@ func Run() {
 		os.Exit(-1)
 	}
 
-	validators := []validator.ValidatorInterface{
-		validator.NewCardActiveValidator(),
-		validator.NewCardLimitValidator(),
-		validator.NewHighTransactionsValidator(2, 120),
-		validator.NewDoubleTransactionValidator(120),
-	}
+	validatorManager := validator.NewManager(
+		[]validator.ValidatorInterface{
+			validator.NewAccountNotInitializedValidator(),
+			validator.NewAccountAlreadyInitializedValidator(),
+			validator.NewCardActiveValidator(),
+			validator.NewCardLimitValidator(),
+			validator.NewHighTransactionsValidator(2, 120),
+			validator.NewDoubleTransactionValidator(120),
+		},
+	)
 
-	authorizeService := service.NewAuthorizeService(validators)
+	authorizeService := service.NewAuthorizeService(validatorManager)
 	authorizeService.HandleOperations(operations)
 }

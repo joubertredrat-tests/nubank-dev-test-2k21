@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 
 	"dev-test/nubank-dev-test-2k21/app/builder"
@@ -10,17 +9,13 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
-var (
-	ErrAccountRequired = errors.New("account not informed in first operation")
-)
-
 type AuthorizeService struct {
-	Validators []validator.ValidatorInterface
+	validatorManager validator.Manager
 }
 
-func NewAuthorizeService(validators []validator.ValidatorInterface) AuthorizeService {
+func NewAuthorizeService(validatorManager validator.Manager) AuthorizeService {
 	return AuthorizeService{
-		Validators: validators,
+		validatorManager: validatorManager,
 	}
 }
 
