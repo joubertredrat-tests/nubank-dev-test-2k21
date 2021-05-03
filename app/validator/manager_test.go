@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"dev-test/nubank-dev-test-2k21/app/entity"
+	"dev-test/nubank-dev-test-2k21/app/helper"
 	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
@@ -21,17 +22,19 @@ func TestManager(t *testing.T) {
 		violationsData []ViolationData
 		getManager     func() validator.Manager
 	}{
-		// {
-		// 	name:           "Test with no violations",
-		// 	violationsData: getOperationsDataWithNoViolations(),
-		// 	getManager: func() validator.Manager {
-		// 		return validator.NewManager(
-		// 			[]validator.ValidatorInterface{
-		// 				validator.NewAccountNotInitializedValidator(),
-		// 			},
-		// 		)
-		// 	},
-		// },
+		{
+			name:           "Test validation with no violations",
+			violationsData: getOperationsDataWithNoViolations(),
+			getManager: func() validator.Manager {
+				return validator.NewManager(
+					[]validator.ValidatorInterface{
+						// validator.NewCardLimitValidator(),
+						validator.NewHighTransactionsValidator(2, 120),
+						// validator.NewDoubleTransactionValidator(120),
+					},
+				)
+			},
+		},
 		// {
 		// 	name:           "Test with not initialized account violations",
 		// 	violationsData: getOperationsDataWithNotInitializedAccount(),
@@ -76,15 +79,35 @@ func TestManager(t *testing.T) {
 	}
 }
 
-// func getOperationsDataWithNoViolations() []ViolationData {
-// 	return []ViolationData{
-// 		{
-// 			Account:            entity.NewAccount(true, 100),
-// 			Transaction:        entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
-// 			ViolationsExpected: []*entity.Violation{},
-// 		},
-// 	}
-// }
+func getOperationsDataWithNoViolations() []ViolationData {
+	return []ViolationData{
+		{
+			Account:            entity.NewAccount(true, 200),
+			Transaction:        entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
+			ViolationsExpected: []*entity.Violation{},
+		},
+		{
+			Account:            entity.NewAccount(true, 180),
+			Transaction:        entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
+			ViolationsExpected: []*entity.Violation{},
+		},
+		{
+			Account:            entity.NewAccount(true, 160),
+			Transaction:        entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T07:04:00.000Z")),
+			ViolationsExpected: []*entity.Violation{},
+		},
+		{
+			Account:            entity.NewAccount(true, 140),
+			Transaction:        entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T07:15:00.000Z")),
+			ViolationsExpected: []*entity.Violation{},
+		},
+		{
+			Account:            entity.NewAccount(true, 120),
+			Transaction:        entity.NewTransaction("Domino's Pizza", 20, helper.GetTimeFromString("2021-04-21T09:26:00.000Z")),
+			ViolationsExpected: []*entity.Violation{},
+		},
+	}
+}
 
 // func getOperationsDataWithNotInitializedAccount() []ViolationData {
 // 	return []ViolationData{
