@@ -46,9 +46,6 @@ func Run() {
 
 	validatorManager := validator.NewManager(
 		[]validator.ValidatorInterface{
-			validator.NewAccountNotInitializedValidator(),
-			validator.NewAccountAlreadyInitializedValidator(),
-			validator.NewCardActiveValidator(),
 			validator.NewCardLimitValidator(),
 			validator.NewHighTransactionsValidator(2, 120),
 			validator.NewDoubleTransactionValidator(120),

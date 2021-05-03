@@ -34,8 +34,19 @@ func TestManager(t *testing.T) {
 			},
 		},
 		// {
-		// 	name:           "Test with not initialized account",
+		// 	name:           "Test with not initialized account violations",
 		// 	violationsData: getOperationsDataWithNotInitializedAccount(),
+		// 	getManager: func() validator.Manager {
+		// 		return validator.NewManager(
+		// 			[]validator.ValidatorInterface{
+		// 				validator.NewAccountNotInitializedValidator(),
+		// 			},
+		// 		)
+		// 	},
+		// },
+		// {
+		// 	name:           "Test with already initialized account violations",
+		// 	violationsData: getOperationsDataWithAlreadyInitializedAccount(),
 		// 	getManager: func() validator.Manager {
 		// 		return validator.NewManager(
 		// 			[]validator.ValidatorInterface{
@@ -68,7 +79,7 @@ func TestManager(t *testing.T) {
 
 func getOperationsDataWithNoViolations() []ViolationData {
 	return []ViolationData{
-		ViolationData{
+		{
 			Account:            entity.NewAccount(true, 100),
 			Transaction:        entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
 			ViolationsExpected: []*entity.Violation{},
@@ -78,12 +89,58 @@ func getOperationsDataWithNoViolations() []ViolationData {
 
 // func getOperationsDataWithNotInitializedAccount() []ViolationData {
 // 	return []ViolationData{
-// 		ViolationData{
+// 		{
 // 			Account:     entity.NewAccountEmpty(),
 // 			Transaction: entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
 // 			ViolationsExpected: []*entity.Violation{
-// 				&entity.NewViolationAccountNotInitialized(),
+// 				entity.NewViolationAccountNotInitialized(),
 // 			},
+// 		},
+// 		{
+// 			Account:     entity.NewAccountEmpty(),
+// 			Transaction: entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
+// 			ViolationsExpected: []*entity.Violation{
+// 				entity.NewViolationAccountNotInitialized(),
+// 			},
+// 		},
+// 		{
+// 			Account:            entity.NewAccount(true, 100),
+// 			Transaction:        entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T07:04:00.000Z")),
+// 			ViolationsExpected: []*entity.Violation{},
+// 		},
+// 		{
+// 			Account:            entity.NewAccount(true, 100),
+// 			Transaction:        entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T07:15:00.000Z")),
+// 			ViolationsExpected: []*entity.Violation{},
+// 		},
+// 	}
+// }
+
+// func getOperationsDataWithAlreadyInitializedAccount() []ViolationData {
+// 	return []ViolationData{
+// 		{
+// 			Account:     entity.NewAccount(true, 100),
+// 			Transaction: entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z")),
+// 			ViolationsExpected: []*entity.Violation{
+// 				entity.NewViolationAccountNotInitialized(),
+// 			},
+// 		},
+// 		{
+// 			Account:     entity.NewAccount(true, 100),
+// 			Transaction: entity.NewTransaction("Habib's", 20, helper.GetTimeFromString("2021-04-20T19:42:00.000Z")),
+// 			ViolationsExpected: []*entity.Violation{
+// 				entity.NewViolationAccountNotInitialized(),
+// 			},
+// 		},
+// 		{
+// 			Account:            entity.NewAccount(true, 100),
+// 			Transaction:        entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-21T07:04:00.000Z")),
+// 			ViolationsExpected: []*entity.Violation{},
+// 		},
+// 		{
+// 			Account:            entity.NewAccount(true, 100),
+// 			Transaction:        entity.NewTransaction("Subway", 20, helper.GetTimeFromString("2021-04-21T07:15:00.000Z")),
+// 			ViolationsExpected: []*entity.Violation{},
 // 		},
 // 	}
 // }

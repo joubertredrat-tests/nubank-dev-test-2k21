@@ -49,6 +49,10 @@ func NewViolationDoubleTransaction() *Violation {
 	}
 }
 
+func NewViolationsEmpty() []*Violation {
+	return []*Violation{}
+}
+
 func (v Violation) GetName() string {
 	return v.name
 }

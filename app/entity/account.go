@@ -22,6 +22,14 @@ func NewAccount(activeCard bool, availableLimit uint) Account {
 	}
 }
 
+func NewAccountSubtractLimit(account Account, transaction Transaction) Account {
+	return Account{
+		initialized:    account.initialized,
+		activeCard:     account.activeCard,
+		availableLimit: NewAmount(account.availableLimit.value - transaction.amount.value),
+	}
+}
+
 func (a Account) IsInitialized() bool {
 	return a.initialized
 }
@@ -32,9 +40,4 @@ func (a Account) IsActiveCard() bool {
 
 func (a Account) GetAvailableLimit() Amount {
 	return a.availableLimit
-}
-
-func (a *Account) SubtractLimit(amountSubtract Amount) error {
-	a.availableLimit = NewAmount(a.availableLimit.GetValue() - amountSubtract.GetValue())
-	return nil
 }

@@ -36,23 +36,27 @@ func (a AuthorizeService) HandleOperations(inputOperations input.Operations) err
 			continue
 		}
 
+		if operationLine.IsTransaction() && !account.IsActiveCard() {
+			operations.RegisterViolationEvent(account, entity.NewViolationCardNotActive())
+
+			continue
+		}
+
 		if operationLine.IsAccount() {
 			account = builder.CreateAccountFromInputDTO(operationLine.(input.AccountLine))
-			operations.RegisterEvent(account)
+			operations.RegisterEvent(account, entity.NewViolationsEmpty())
 			continue
 		}
 
 		if operationLine.IsTransaction() {
-			// violations := []entity.Violation
-			// transaction := builder.CreateTransactionFromInputDTO(operationLine)
+			transaction := builder.CreateTransactionFromInputDTO(operationLine)
+			violations := a.validatorManager.GetViolations(account, transaction)
 
-			// for _, validator := range a.Validators {
-			// 	if validator.IsAccountValidator() {
-			// 		validator.GetViolation(account)
-			// 	}
-			// }
+			if 1 > len(violations) {
+				account = entity.NewAccountSubtractLimit(account, transaction)
+			}
 
-			fmt.Printf("%+v\n", "ttt all")
+			operations.RegisterEvent(account, a.validatorManager.GetViolations(account, transaction))
 		}
 	}
 
