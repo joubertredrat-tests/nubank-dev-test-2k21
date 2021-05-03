@@ -7,15 +7,15 @@ import (
 )
 
 type HighTransactionsValidator struct {
-	TransactionsTime     []time.Time
-	TransactionsAnalysis uint
-	TimeIntervalSeconds  uint
+	transactionsTime     []time.Time
+	transactionsAnalysis uint
+	timeIntervalSeconds  uint
 }
 
 func NewHighTransactionsValidator(transactionsAnalysis, timeIntervalSeconds uint) *HighTransactionsValidator {
 	return &HighTransactionsValidator{
-		TransactionsAnalysis: transactionsAnalysis,
-		TimeIntervalSeconds:  timeIntervalSeconds,
+		transactionsAnalysis: transactionsAnalysis,
+		timeIntervalSeconds:  timeIntervalSeconds,
 	}
 }
 
@@ -29,13 +29,13 @@ func (v *HighTransactionsValidator) GetViolation(account entity.Account, transac
 }
 
 func (v *HighTransactionsValidator) registerTransactionTime(t time.Time) {
-	v.TransactionsTime = append(v.TransactionsTime, t)
+	v.transactionsTime = append(v.transactionsTime, t)
 }
 
 func (v *HighTransactionsValidator) hasHighFrequency() bool {
 	transactionsTime := v.getTransactionsTimeForAnalysis()
 
-	if int(v.TransactionsAnalysis) > len(transactionsTime) {
+	if int(v.transactionsAnalysis) > len(transactionsTime) {
 		return false
 	}
 
@@ -43,14 +43,14 @@ func (v *HighTransactionsValidator) hasHighFrequency() bool {
 	timeFinal := transactionsTime[len(transactionsTime)-1]
 	timeDiff := timeFinal.Sub(timeInitial)
 
-	return float64(v.TimeIntervalSeconds) >= timeDiff.Seconds()
+	return float64(v.timeIntervalSeconds) >= timeDiff.Seconds()
 }
 
 func (v *HighTransactionsValidator) getTransactionsTimeForAnalysis() []time.Time {
-	if len(v.TransactionsTime) <= int(v.TransactionsAnalysis) {
-		return v.TransactionsTime
+	if int(v.transactionsAnalysis) >= len(v.transactionsTime) {
+		return v.transactionsTime
 	}
 
-	sliceCut := len(v.TransactionsTime) - int(v.TransactionsAnalysis)
-	return v.TransactionsTime[sliceCut:]
+	sliceCut := len(v.transactionsTime) - int(v.transactionsAnalysis)
+	return v.transactionsTime[sliceCut:]
 }

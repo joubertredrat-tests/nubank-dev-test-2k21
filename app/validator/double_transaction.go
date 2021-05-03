@@ -5,14 +5,14 @@ import (
 )
 
 type DoubleTransactionValidator struct {
-	Transactions        map[string][]entity.Transaction
-	TimeIntervalSeconds uint
+	transactions        map[string][]entity.Transaction
+	timeIntervalSeconds uint
 }
 
 func NewDoubleTransactionValidator(timeIntervalSeconds uint) *DoubleTransactionValidator {
 	return &DoubleTransactionValidator{
-		Transactions:        make(map[string][]entity.Transaction),
-		TimeIntervalSeconds: timeIntervalSeconds,
+		transactions:        make(map[string][]entity.Transaction),
+		timeIntervalSeconds: timeIntervalSeconds,
 	}
 }
 
@@ -26,30 +26,30 @@ func (v *DoubleTransactionValidator) GetViolation(account entity.Account, transa
 }
 
 func (v *DoubleTransactionValidator) registerTransaction(transaction entity.Transaction) {
-	if _, ok := v.Transactions[transaction.GetMerchant()]; !ok {
-		v.Transactions[transaction.GetMerchant()] = []entity.Transaction{}
+	if _, ok := v.transactions[transaction.GetMerchant()]; !ok {
+		v.transactions[transaction.GetMerchant()] = []entity.Transaction{}
 	}
 
-	v.Transactions[transaction.GetMerchant()] = append(
-		v.Transactions[transaction.GetMerchant()],
+	v.transactions[transaction.GetMerchant()] = append(
+		v.transactions[transaction.GetMerchant()],
 		transaction,
 	)
 }
 
 func (v *DoubleTransactionValidator) hasDoubleTransactions(transaction entity.Transaction) bool {
-	if len(v.Transactions[transaction.GetMerchant()]) < 2 {
+	if len(v.transactions[transaction.GetMerchant()]) < 2 {
 		return false
 	}
 
-	keyTransactionInitial := len(v.Transactions[transaction.GetMerchant()]) - 2
-	keyTransactionFinal := len(v.Transactions[transaction.GetMerchant()]) - 1
-	transactionInitial := v.Transactions[transaction.GetMerchant()][keyTransactionInitial]
-	transactionFinal := v.Transactions[transaction.GetMerchant()][keyTransactionFinal]
+	keyTransactionInitial := len(v.transactions[transaction.GetMerchant()]) - 2
+	keyTransactionFinal := len(v.transactions[transaction.GetMerchant()]) - 1
+	transactionInitial := v.transactions[transaction.GetMerchant()][keyTransactionInitial]
+	transactionFinal := v.transactions[transaction.GetMerchant()][keyTransactionFinal]
 
 	if transactionFinal.GetAmount().GetValue() != transactionInitial.GetAmount().GetValue() {
 		return false
 	}
 
 	timeDiff := transactionFinal.GetTime().Sub(transactionInitial.GetTime())
-	return float64(v.TimeIntervalSeconds) >= timeDiff.Seconds()
+	return float64(v.timeIntervalSeconds) >= timeDiff.Seconds()
 }
