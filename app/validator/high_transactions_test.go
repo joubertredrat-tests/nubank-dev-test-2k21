@@ -9,7 +9,7 @@ import (
 )
 
 func TestHighTransactionsValidatorIsBreakNextCheck(t *testing.T) {
-	validator := validator.NewCardLimitValidator()
+	validator := validator.NewHighTransactionsValidator(3, 120)
 
 	if validator.IsBreakNextCheck() {
 		t.Errorf("validator.IsBreakNextCheck() expected false, got true")
