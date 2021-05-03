@@ -8,19 +8,11 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
-func TestKindOfHighTransactionsValidator(t *testing.T) {
-	validator := validator.NewHighTransactionsValidator(3, 120)
+func TestHighTransactionsValidatorIsBreakNextCheck(t *testing.T) {
+	validator := validator.NewCardLimitValidator()
 
-	if validator.IsAccountValidator() {
-		t.Errorf("validator.IsAccountValidator() expected false, got true")
-	}
-
-	if !validator.IsTransactionValidator() {
-		t.Errorf("validator.IsTransactionValidator() expected true, got false")
-	}
-
-	if validator.IsOperationValidator() {
-		t.Errorf("validator.IsOperationValidator() expected false, got true")
+	if validator.IsBreakNextCheck() {
+		t.Errorf("validator.IsBreakNextCheck() expected false, got true")
 	}
 }
 
@@ -126,7 +118,7 @@ func TestHighTransactionsValidator(t *testing.T) {
 			violationsGot := 0
 			validator := validator.NewHighTransactionsValidator(3, 120)
 			for _, transaction := range test.getTransactions() {
-				violationGot := validator.GetViolation(transaction)
+				violationGot := validator.GetViolation(entity.NewAccountEmpty(), transaction)
 				if violationGot != nil {
 					violationsGot++
 				}
@@ -147,9 +139,9 @@ func TestViolationHighFrequencySmallInterval(t *testing.T) {
 	transactionThree := entity.NewTransaction("Bob's", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z"))
 
 	validator := validator.NewHighTransactionsValidator(3, 120)
-	validator.GetViolation(transactionOne)
-	validator.GetViolation(transactionTwo)
-	violationGot := validator.GetViolation(transactionThree)
+	validator.GetViolation(entity.NewAccountEmpty(), transactionOne)
+	validator.GetViolation(entity.NewAccountEmpty(), transactionTwo)
+	violationGot := validator.GetViolation(entity.NewAccountEmpty(), transactionThree)
 
 	if violationExpected.GetName() != violationGot.GetName() {
 		t.Errorf("validator.GetViolation() expected violation with name %s, got %s", violationExpected.GetName(), violationGot.GetName())

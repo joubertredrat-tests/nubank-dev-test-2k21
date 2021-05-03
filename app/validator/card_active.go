@@ -10,19 +10,11 @@ func NewCardActiveValidator() *CardActiveValidator {
 	return &CardActiveValidator{}
 }
 
-func (v *CardActiveValidator) IsAccountValidator() bool {
+func (v *CardActiveValidator) IsBreakNextCheck() bool {
 	return true
 }
 
-func (v *CardActiveValidator) IsTransactionValidator() bool {
-	return false
-}
-
-func (v *CardActiveValidator) IsOperationValidator() bool {
-	return false
-}
-
-func (v *CardActiveValidator) GetViolation(account entity.Account) *entity.Violation {
+func (v *CardActiveValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
 	if !account.IsActiveCard() {
 		violation := entity.NewViolationCardNotActive()
 		return &violation

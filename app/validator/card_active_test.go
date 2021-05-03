@@ -7,25 +7,16 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
-func TestKindOfCardActiveValidator(t *testing.T) {
+func TestCardActiveValidatorIsBreakNextCheck(t *testing.T) {
 	validator := validator.NewCardActiveValidator()
 
-	if !validator.IsAccountValidator() {
-		t.Errorf("validator.IsAccountValidator() expected true, got false")
-	}
-
-	if validator.IsTransactionValidator() {
-		t.Errorf("validator.IsTransactionValidator() expected false, got true")
-	}
-
-	if validator.IsOperationValidator() {
-		t.Errorf("validator.IsOperationValidator() expected false, got true")
+	if !validator.IsBreakNextCheck() {
+		t.Errorf("validator.IsBreakNextCheck() expected true, got false")
 	}
 }
 func TestCardActiveValidator(t *testing.T) {
-	account := entity.NewAccount(true, 100)
 	validator := validator.NewCardActiveValidator()
-	violationGot := validator.GetViolation(account)
+	violationGot := validator.GetViolation(entity.NewAccount(true, 100), entity.Transaction{})
 
 	if violationGot != nil {
 		t.Errorf("validator.GetViolation() expected violation nil, got %s", violationGot.GetName())
@@ -34,9 +25,8 @@ func TestCardActiveValidator(t *testing.T) {
 
 func TestCardNotActiveValidator(t *testing.T) {
 	violationExpected := entity.NewViolationCardNotActive()
-	account := entity.NewAccount(false, 100)
 	validator := validator.NewCardActiveValidator()
-	violationGot := validator.GetViolation(account)
+	violationGot := validator.GetViolation(entity.NewAccount(false, 100), entity.Transaction{})
 
 	if violationExpected.GetName() != violationGot.GetName() {
 		t.Errorf("validator.GetViolation() expected violation with name %s, got %s", violationExpected.GetName(), violationGot.GetName())

@@ -16,19 +16,11 @@ func NewDoubleTransactionValidator(timeIntervalSeconds uint) *DoubleTransactionV
 	}
 }
 
-func (v *DoubleTransactionValidator) IsAccountValidator() bool {
+func (v *DoubleTransactionValidator) IsBreakNextCheck() bool {
 	return false
 }
 
-func (v *DoubleTransactionValidator) IsTransactionValidator() bool {
-	return true
-}
-
-func (v *DoubleTransactionValidator) IsOperationValidator() bool {
-	return false
-}
-
-func (v *DoubleTransactionValidator) GetViolation(transaction entity.Transaction) *entity.Violation {
+func (v *DoubleTransactionValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
 	v.registerTransaction(transaction)
 	if v.hasDoubleTransactions(transaction) {
 		violation := entity.NewViolationDoubleTransaction()

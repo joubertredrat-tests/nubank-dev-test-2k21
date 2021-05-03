@@ -19,19 +19,11 @@ func NewHighTransactionsValidator(transactionsAnalysis, timeIntervalSeconds uint
 	}
 }
 
-func (v *HighTransactionsValidator) IsAccountValidator() bool {
+func (v *HighTransactionsValidator) IsBreakNextCheck() bool {
 	return false
 }
 
-func (v *HighTransactionsValidator) IsTransactionValidator() bool {
-	return true
-}
-
-func (v *HighTransactionsValidator) IsOperationValidator() bool {
-	return false
-}
-
-func (v *HighTransactionsValidator) GetViolation(transaction entity.Transaction) *entity.Violation {
+func (v *HighTransactionsValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
 	v.registerTransactionTime(transaction.GetTime())
 	if v.hasHighFrequency() {
 		violation := entity.NewViolationHighFrequencySmallInterval()

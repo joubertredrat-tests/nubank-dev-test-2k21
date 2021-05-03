@@ -5,19 +5,6 @@ import (
 )
 
 type ValidatorInterface interface {
-	IsAccountValidator() bool
-	IsTransactionValidator() bool
-	IsOperationValidator() bool
-}
-
-type AccountValidatorInterface interface {
-	GetViolation(account entity.Account) *entity.Violation
-}
-
-type TransactionValidatorInterface interface {
-	GetViolation(transaction entity.Transaction) *entity.Violation
-}
-
-type OperationValidatorInterface interface {
+	IsBreakNextCheck() bool
 	GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation
 }

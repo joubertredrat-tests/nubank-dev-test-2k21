@@ -8,19 +8,11 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
-func TestKindOfCardLimitValidator(t *testing.T) {
+func TestCardLimitValidatorIsBreakNextCheck(t *testing.T) {
 	validator := validator.NewCardLimitValidator()
 
-	if validator.IsAccountValidator() {
-		t.Errorf("validator.IsAccountValidator() expected false, got true")
-	}
-
-	if validator.IsTransactionValidator() {
-		t.Errorf("validator.IsTransactionValidator() expected false, got true")
-	}
-
-	if !validator.IsOperationValidator() {
-		t.Errorf("validator.IsOperationValidator() expected true, got false")
+	if validator.IsBreakNextCheck() {
+		t.Errorf("validator.IsBreakNextCheck() expected false, got true")
 	}
 }
 
