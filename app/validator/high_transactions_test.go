@@ -8,14 +8,6 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
-func TestHighTransactionsValidatorIsBreakNextCheck(t *testing.T) {
-	validator := validator.NewHighTransactionsValidator(3, 120)
-
-	if validator.IsBreakNextCheck() {
-		t.Errorf("validator.IsBreakNextCheck() expected false, got true")
-	}
-}
-
 func TestHighTransactionsValidator(t *testing.T) {
 	tests := []struct {
 		name               string

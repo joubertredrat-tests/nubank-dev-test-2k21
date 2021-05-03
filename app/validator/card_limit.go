@@ -10,10 +10,6 @@ func NewCardLimitValidator() *CardLimitValidator {
 	return &CardLimitValidator{}
 }
 
-func (v *CardLimitValidator) IsBreakNextCheck() bool {
-	return false
-}
-
 func (v *CardLimitValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
 	if transaction.GetAmount().GetValue() > account.GetAvailableLimit().GetValue() {
 		return entity.NewViolationInsufficientLimit()

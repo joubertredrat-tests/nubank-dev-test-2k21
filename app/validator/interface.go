@@ -5,6 +5,5 @@ import (
 )
 
 type ValidatorInterface interface {
-	IsBreakNextCheck() bool
 	GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation
 }

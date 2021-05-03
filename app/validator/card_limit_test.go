@@ -8,14 +8,6 @@ import (
 	"dev-test/nubank-dev-test-2k21/app/validator"
 )
 
-func TestCardLimitValidatorIsBreakNextCheck(t *testing.T) {
-	validator := validator.NewCardLimitValidator()
-
-	if validator.IsBreakNextCheck() {
-		t.Errorf("validator.IsBreakNextCheck() expected false, got true")
-	}
-}
-
 func TestCardLimitValidator(t *testing.T) {
 	account := entity.NewAccount(true, 100)
 	transaction := entity.NewTransaction("Burger King", 20, helper.GetTimeFromString("2021-04-20T19:25:00.000Z"))

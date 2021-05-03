@@ -19,10 +19,6 @@ func NewHighTransactionsValidator(transactionsAnalysis, timeIntervalSeconds uint
 	}
 }
 
-func (v *HighTransactionsValidator) IsBreakNextCheck() bool {
-	return false
-}
-
 func (v *HighTransactionsValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
 	v.registerTransactionTime(transaction.GetTime())
 	if v.hasHighFrequency() {

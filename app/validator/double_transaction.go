@@ -16,10 +16,6 @@ func NewDoubleTransactionValidator(timeIntervalSeconds uint) *DoubleTransactionV
 	}
 }
 
-func (v *DoubleTransactionValidator) IsBreakNextCheck() bool {
-	return false
-}
-
 func (v *DoubleTransactionValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
 	v.registerTransaction(transaction)
 	if v.hasDoubleTransactions(transaction) {

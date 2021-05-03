@@ -17,12 +17,6 @@ func (m Manager) GetViolations(account entity.Account, transaction entity.Transa
 
 	for _, validator := range m.validators {
 		violation := validator.GetViolation(account, transaction)
-
-		if violation != nil && validator.IsBreakNextCheck() {
-			violations = append(violations, violation)
-			return violations
-		}
-
 		if violation != nil {
 			violations = append(violations, violation)
 		}
