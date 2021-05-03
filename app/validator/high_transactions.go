@@ -35,7 +35,7 @@ func (v *HighTransactionsValidator) registerTransactionTime(t time.Time) {
 func (v *HighTransactionsValidator) hasHighFrequency() bool {
 	transactionsTime := v.getTransactionsTimeForAnalysis()
 
-	if len(transactionsTime) < int(v.TransactionsAnalysis-1) {
+	if int(v.TransactionsAnalysis) > len(transactionsTime) {
 		return false
 	}
 
