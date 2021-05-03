@@ -23,8 +23,7 @@ func (v *DoubleTransactionValidator) IsBreakNextCheck() bool {
 func (v *DoubleTransactionValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
 	v.registerTransaction(transaction)
 	if v.hasDoubleTransactions(transaction) {
-		violation := entity.NewViolationDoubleTransaction()
-		return &violation
+		return entity.NewViolationDoubleTransaction()
 	}
 
 	return nil

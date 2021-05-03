@@ -2,10 +2,10 @@ package entity
 
 type Event struct {
 	Account    Account
-	Violations []Violation
+	Violations []*Violation
 }
 
-func NewEvent(account Account, violations []Violation) Event {
+func NewEvent(account Account, violations []*Violation) Event {
 	return Event{
 		Account:    account,
 		Violations: violations,
@@ -25,18 +25,18 @@ func NewOperations() Operations {
 func (o *Operations) RegisterEvent(account Account) {
 	o.Events = append(
 		o.Events,
-		NewEvent(account, []Violation{}),
+		NewEvent(account, []*Violation{}),
 	)
 }
 
-func (o *Operations) RegisterViolationEvent(account Account, violation Violation) {
+func (o *Operations) RegisterViolationEvent(account Account, violation *Violation) {
 	o.Events = append(
 		o.Events,
-		NewEvent(account, []Violation{violation}),
+		NewEvent(account, []*Violation{violation}),
 	)
 }
 
-func (o *Operations) RegisterViolationsEvent(account Account, violations []Violation) {
+func (o *Operations) RegisterViolationsEvent(account Account, violations []*Violation) {
 	o.Events = append(
 		o.Events,
 		NewEvent(account, violations),

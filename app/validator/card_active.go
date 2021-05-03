@@ -16,8 +16,7 @@ func (v *CardActiveValidator) IsBreakNextCheck() bool {
 
 func (v *CardActiveValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
 	if !account.IsActiveCard() {
-		violation := entity.NewViolationCardNotActive()
-		return &violation
+		return entity.NewViolationCardNotActive()
 	}
 
 	return nil

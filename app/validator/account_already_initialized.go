@@ -14,8 +14,7 @@ func (v *AccountAlreadyInitializedValidator) IsBreakNextCheck() bool {
 
 func (v *AccountAlreadyInitializedValidator) GetViolation(account entity.Account, transaction entity.Transaction) *entity.Violation {
 	if account.IsInitialized() {
-		violation := entity.NewViolationAccountAlreadyInitialized()
-		return &violation
+		return entity.NewViolationAccountAlreadyInitialized()
 	}
 
 	return nil
