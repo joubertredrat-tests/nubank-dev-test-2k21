@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	"dev-test/nubank-dev-test-2k21/app/builder"
 	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/service"
 	"dev-test/nubank-dev-test-2k21/app/validator"
@@ -53,5 +54,11 @@ func Run() {
 	)
 
 	authorizeService := service.NewAuthorizeService(validatorManager)
-	authorizeService.HandleOperations(operations)
+	operationsEvents := authorizeService.HandleOperations(operations)
+
+	for _, operationEvent := range operationsEvents.GetEvents() {
+		accountLineOutput := builder.CreateAccountOutputDTOFromOperationEvent(operationEvent)
+		stringJson, _ := json.Marshal(accountLineOutput)
+		fmt.Println(string(stringJson))
+	}
 }

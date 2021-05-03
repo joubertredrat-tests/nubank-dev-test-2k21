@@ -23,3 +23,7 @@ func (o *Operations) RegisterViolationEvent(account Account, violation *Violatio
 		NewOperationEvent(account, []*Violation{violation}),
 	)
 }
+
+func (o *Operations) GetEvents() []OperationEvent {
+	return o.events
+}

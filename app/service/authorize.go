@@ -1,8 +1,6 @@
 package service
 
 import (
-	"fmt"
-
 	"dev-test/nubank-dev-test-2k21/app/builder"
 	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/entity"
@@ -19,7 +17,7 @@ func NewAuthorizeService(validatorManager validator.Manager) AuthorizeService {
 	}
 }
 
-func (a AuthorizeService) HandleOperations(inputOperations input.Operations) error {
+func (a AuthorizeService) HandleOperations(inputOperations input.Operations) entity.Operations {
 	operations := entity.NewOperations()
 	account := entity.NewAccountEmpty()
 
@@ -60,7 +58,5 @@ func (a AuthorizeService) HandleOperations(inputOperations input.Operations) err
 		}
 	}
 
-	fmt.Printf("%+v\n", operations)
-
-	return nil
+	return operations
 }
