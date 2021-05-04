@@ -54,7 +54,7 @@ func (a AuthorizeService) HandleOperations(inputOperations input.Operations) ent
 				account = entity.NewAccountSubtractLimit(account, transaction)
 			}
 
-			operations.RegisterEvent(account, a.validatorManager.GetViolations(account, transaction))
+			operations.RegisterEvent(account, violations)
 		}
 	}
 
