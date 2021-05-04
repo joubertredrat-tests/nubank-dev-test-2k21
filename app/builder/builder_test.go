@@ -1,13 +1,14 @@
 package builder_test
 
 import (
+	"reflect"
+	"testing"
+	"time"
+
 	"dev-test/nubank-dev-test-2k21/app/builder"
 	"dev-test/nubank-dev-test-2k21/app/dto/input"
 	"dev-test/nubank-dev-test-2k21/app/dto/output"
 	"dev-test/nubank-dev-test-2k21/app/entity"
-	"reflect"
-	"testing"
-	"time"
 )
 
 func TestCreateAccountFromInputDTO(t *testing.T) {
