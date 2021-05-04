@@ -318,6 +318,101 @@ func TestAuthorizeService(t *testing.T) {
 			},
 		},
 		{
+			name: "Test handle operations with violations for card not active",
+			authorizeService: service.NewAuthorizeService(
+				validator.NewManager(
+					[]validator.ValidatorInterface{
+						validator.NewCardLimitValidator(),
+						validator.NewHighTransactionsValidator(3, 120),
+						validator.NewDoubleTransactionValidator(120),
+					},
+				),
+			),
+			getInputOperations: func() input.Operations {
+				operations := input.NewOperations()
+				operations.AddLine(input.AccountLine{
+					Account: struct {
+						ActiveCard     bool `json:"active-card"`
+						AvailableLimit uint `json:"available-limit"`
+					}{
+						ActiveCard:     false,
+						AvailableLimit: 120,
+					},
+				})
+				operations.AddLine(input.TransactionLine{
+					Transaction: struct {
+						Merchant string    `json:"merchant"`
+						Amount   uint      `json:"amount"`
+						Time     time.Time `json:"time"`
+					}{
+						Merchant: "Burger King",
+						Amount:   20,
+						Time:     helper.GetTimeFromString("2021-04-20T19:25:00.000Z"),
+					},
+				})
+				operations.AddLine(input.TransactionLine{
+					Transaction: struct {
+						Merchant string    `json:"merchant"`
+						Amount   uint      `json:"amount"`
+						Time     time.Time `json:"time"`
+					}{
+						Merchant: "Habib's",
+						Amount:   10,
+						Time:     helper.GetTimeFromString("2021-04-20T19:42:00.000Z"),
+					},
+				})
+				operations.AddLine(input.TransactionLine{
+					Transaction: struct {
+						Merchant string    `json:"merchant"`
+						Amount   uint      `json:"amount"`
+						Time     time.Time `json:"time"`
+					}{
+						Merchant: "Bob's",
+						Amount:   15,
+						Time:     helper.GetTimeFromString("2021-04-21T07:04:00.000Z"),
+					},
+				})
+				operations.AddLine(input.TransactionLine{
+					Transaction: struct {
+						Merchant string    `json:"merchant"`
+						Amount   uint      `json:"amount"`
+						Time     time.Time `json:"time"`
+					}{
+						Merchant: "Subway",
+						Amount:   30,
+						Time:     helper.GetTimeFromString("2021-04-21T07:15:00.000Z"),
+					},
+				})
+
+				return operations
+			},
+			getOperationsExpected: func() entity.Operations {
+				operations := entity.NewOperations()
+				operations.RegisterEvent(
+					entity.NewAccount(false, 120),
+					entity.NewViolationsEmpty(),
+				)
+				operations.RegisterViolationEvent(
+					entity.NewAccount(false, 120),
+					entity.NewViolationCardNotActive(),
+				)
+				operations.RegisterViolationEvent(
+					entity.NewAccount(false, 120),
+					entity.NewViolationCardNotActive(),
+				)
+				operations.RegisterViolationEvent(
+					entity.NewAccount(false, 120),
+					entity.NewViolationCardNotActive(),
+				)
+				operations.RegisterViolationEvent(
+					entity.NewAccount(false, 120),
+					entity.NewViolationCardNotActive(),
+				)
+
+				return operations
+			},
+		},
+		{
 			name: "Test handle operations with multiple violations",
 			authorizeService: service.NewAuthorizeService(
 				validator.NewManager(
